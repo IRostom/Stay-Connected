@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:simple_permissions/simple_permissions.dart';
 
+List<CustomContact> _uiCustomContacts = List<CustomContact>();
+List<CustomContact> _allContacts = List<CustomContact>();
+
 void main() => runApp(new MyApp());
 
 class MyApp extends StatelessWidget {
@@ -39,8 +42,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<Contact> _contacts = new List<Contact>();
-  List<CustomContact> _uiCustomContacts = List<CustomContact>();
-  List<CustomContact> _allContacts = List<CustomContact>();
+
   bool _isLoading = false;
   bool _isSelectedContactsView = false;
   String floatingButtonLabel;
@@ -80,6 +82,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    _uiCustomContacts =
+        _allContacts.where((contact) => contact.isChecked == true).toList();
     return new Scaffold(
       appBar: new AppBar(
         title: new Text(widget.title),
@@ -126,13 +130,15 @@ class _MyHomePageState extends State<MyHomePage> {
         ); */
       }
     }); */
-    
+
     //_uiCustomContacts = _allContacts;
 
     Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => SecondRoute(uiCustomContacts: _allContacts)),
-  );
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              SecondRoute(/* uiCustomContacts: _allContacts */)),
+    );
   }
 
   ListTile _buildListTile(CustomContact c, List<Item> list) {
@@ -179,9 +185,9 @@ class _MyHomePageState extends State<MyHomePage> {
     _contacts.sort((a, b) => a.displayName.compareTo(b.displayName));
     _allContacts =
         _contacts.map((contact) => CustomContact(contact: contact)).toList();
+    _uiCustomContacts =
+        _allContacts.where((contact) => contact.isChecked == true).toList();   //kant fl set state
     setState(() {
-      _uiCustomContacts =
-          _allContacts.where((contact) => contact.isChecked == true).toList();
       _isLoading = false;
     });
   }
@@ -191,26 +197,32 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class SecondRoute extends StatefulWidget {
-  SecondRoute({Key key, this.title, this.uiCustomContacts}) : super(key: key);
+  SecondRoute({
+    Key key,
+    this.title,
+    /* this.uiCustomContacts */
+  }) : super(key: key);
 
   final String title;
-  List<CustomContact> uiCustomContacts = List<CustomContact>();
+  //List<CustomContact> uiCustomContacts = List<CustomContact>();
 
   @override
   _SecondRouteState createState() =>
-      new _SecondRouteState(uiCustomContacts: this.uiCustomContacts);
+      new _SecondRouteState(/* uiCustomContacts: this.uiCustomContacts */);
 }
 
 class _SecondRouteState extends State<SecondRoute> {
   bool isLoading = false;
-  List<CustomContact> uiCustomContacts = List<CustomContact>();
+  /* List<CustomContact> uiCustomContacts = List<CustomContact>(); */
 
-  _SecondRouteState({
+  _SecondRouteState(/* {
     this.uiCustomContacts,
-  });
+  } */
+      );
 
   @override
   Widget build(BuildContext context) {
+    _uiCustomContacts = _allContacts;
     return Scaffold(
       appBar: AppBar(
         title: Text('Saved Contacts'),
@@ -218,9 +230,9 @@ class _SecondRouteState extends State<SecondRoute> {
       body: !isLoading
           ? Container(
               child: ListView.builder(
-                itemCount: uiCustomContacts?.length,
+                itemCount: _allContacts?.length,
                 itemBuilder: (BuildContext context, int index) {
-                  CustomContact _contact = uiCustomContacts[index];
+                  CustomContact _contact = _allContacts[index];
                   var _phonesList = _contact.contact.phones.toList();
 
                   return _buildListTile(_contact, _phonesList);
