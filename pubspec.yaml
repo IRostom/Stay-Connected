@@ -19,6 +19,7 @@ environment:
 dependencies:
   contacts_service: ^0.3.0
   simple_permissions: ^0.1.6
+  provider: ^3.0.0
   flutter:
     sdk: flutter
 
