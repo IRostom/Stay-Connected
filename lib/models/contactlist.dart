@@ -5,6 +5,7 @@ import 'package:contacts_service/contacts_service.dart';
 class Contactlist extends ChangeNotifier {
   List<Contact> _contacts = new List<Contact>();
   List<CustomContact> _allContacts = new List<CustomContact>();
+
   Contactlist() {
     refreshContacts();
   }
@@ -14,12 +15,13 @@ class Contactlist extends ChangeNotifier {
   void addfav(CustomContact customContact) {
     if (customContact.isChecked) {
       _favContact.add(customContact);
+      _favContact[_favContact.length - 1].id = _favContact.length - 1;
     }
-    notifyListeners();
-  }
-  void removefav(CustomContact customContact){
-    if (!customContact.isChecked) {
-      _favContact.add(customContact);
+    else{
+      _favContact.remove(customContact);
+      for (var i = 0; i < _favContact.length; i++) {
+        _favContact[i].id = i;
+      }
     }
     notifyListeners();
   }
