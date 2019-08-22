@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:stay_connected/screens/contact.dart';
 //import 'package:cloud_firestore/cloud_firestore.dart';
 //import 'package:stay_connected/models/customcontact.dart';
 import 'package:stay_connected/screens/savedcontacts.dart';
@@ -27,27 +28,9 @@ class MyApp extends StatelessWidget {
         routes: {
         '/': (context) => MyHomePage(title: 'Custom contact selection'),
         '/allcontacts': (context) => SecondRoute(),
+        '/contactview': (context) => Contactview(),
       },
       ),
     );
   }
 }
-
-/* class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'Flutter Demo',
-      theme: new ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => MyHomePage(title: 'Custom contact selection'),
-        '/cart': (context) => SecondRoute(),
-      },
-      /* home: new MyHomePage(title: 'Custom contact selection'), */
-    );
-  }
-} */
