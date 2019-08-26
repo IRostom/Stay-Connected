@@ -14,9 +14,11 @@ class SecondRoute extends StatefulWidget {
 }
 
 class _SecondRouteState extends State<SecondRoute> {
+   
   final bool isLoading = false;
   List<CustomContact> _allContacts = new List<CustomContact>();
   _SecondRouteState();
+
 
   @override
   Widget build(BuildContext context) {
