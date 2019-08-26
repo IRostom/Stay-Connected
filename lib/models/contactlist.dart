@@ -3,9 +3,6 @@ import 'package:stay_connected/models/customcontact.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'dart:async';
-import 'dart:typed_data';
-import 'dart:ui';
-
 class Contactlist extends ChangeNotifier {
   List<Contact> _contacts = new List<Contact>();
   List<CustomContact> _allContacts = new List<CustomContact>();
@@ -15,12 +12,12 @@ class Contactlist extends ChangeNotifier {
 
   Contactlist() {
     refreshContacts();
+    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
     var initializationSettingsAndroid =
         new AndroidInitializationSettings('@mipmap/ic_launcher');
     var initializationSettingsIOS = new IOSInitializationSettings();
     var initializationSettings = new InitializationSettings(
         initializationSettingsAndroid, initializationSettingsIOS);
-    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
@@ -33,6 +30,7 @@ class Contactlist extends ChangeNotifier {
       reminder() async {
         await _scheduleNotification();
       }
+
       reminder();
     } else {
       _favContact.remove(customContact);
@@ -59,36 +57,19 @@ class Contactlist extends ChangeNotifier {
   }
 
   Future<void> _scheduleNotification() async {
-    var scheduledNotificationDateTime =
-        DateTime.now().add(Duration(seconds: 5));
-    var vibrationPattern = Int64List(4);
-    vibrationPattern[0] = 0;
-    vibrationPattern[1] = 1000;
-    vibrationPattern[2] = 5000;
-    vibrationPattern[3] = 2000;
-
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        '0',
-        'Contacts Reminder',
-        'Remind user to stay connected with contacts',
-        icon: 'secondary_icon',
-        sound: 'slow_spring_board',
-        largeIcon: 'sample_large_icon',
-        largeIconBitmapSource: BitmapSource.Drawable,
-        vibrationPattern: vibrationPattern,
-        enableLights: true,
-        color: const Color.fromARGB(255, 255, 0, 0),
-        ledColor: const Color.fromARGB(255, 255, 0, 0),
-        ledOnMs: 1000,
-        ledOffMs: 500);
-    var iOSPlatformChannelSpecifics =
-        IOSNotificationDetails(sound: "slow_spring_board.aiff");
-    var platformChannelSpecifics = NotificationDetails(
+    DateTime scheduledNotificationDateTime =
+        new DateTime.now().add(new Duration(seconds: 5));
+    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+        'your other channel id',
+        'your other channel name',
+        'your other channel description');
+    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
+    NotificationDetails platformChannelSpecifics = new NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.schedule(
         _favContact[_favContact.length - 1].id,
-        'This a reminder',
-        'stay connected with $name',
+        'Reminder',
+        'Stay connected with $name',
         scheduledNotificationDateTime,
         platformChannelSpecifics);
   }

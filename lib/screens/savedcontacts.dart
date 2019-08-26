@@ -37,7 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     getContactsPermission().then((granted) {
-      if (granted) {
+      if (granted == PermissionStatus.authorized) {
         Provider.of<Contactlist>(context, listen: false).refreshContacts();
       } else {
         showDialog(
@@ -106,6 +106,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Future<bool> getContactsPermission() =>
+  Future<PermissionStatus> getContactsPermission() =>
       SimplePermissions.requestPermission(Permission.ReadContacts);
 }
