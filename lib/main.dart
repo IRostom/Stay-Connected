@@ -5,6 +5,7 @@ import 'package:stay_connected/screens/contact-view.dart';
 //import 'package:stay_connected/models/customcontact.dart';
 import 'package:stay_connected/screens/savedcontacts.dart';
 import 'package:stay_connected/screens/allcontacts.dart';
+import 'package:stay_connected/screens/addcontact.dart';
 import 'package:stay_connected/models/contactlist.dart';
 
 
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => MyHomePage(title: 'Custom contact selection'),
         '/allcontacts': (context) => SecondRoute(),
         '/contactview': (context) => Contactview(),
+        '/addcontact': (context) => Addcontact(),
       },
       ),
     );

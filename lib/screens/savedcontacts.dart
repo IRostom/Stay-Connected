@@ -99,9 +99,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   style: TextStyle(color: Colors.white)),
             ),
       title: Text(c.contact.displayName ?? ""),
-      subtitle: list.length >= 1 && list[0]?.value != null
+      subtitle: Text(c.primaryphone ?? ""),/* list.length >= 1 && list[0]?.value != null
           ? Text(list[0].value)
-          : Text(''),
+          : Text(''), */
       onTap: () => Navigator.pushNamed(context, '/contactview', arguments: c),
     );
   }

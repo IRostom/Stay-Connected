@@ -6,6 +6,7 @@ class CustomContact {
   int id;
   DateTime creation;
   int reminderinterval;
+  String primaryphone;
 
   CustomContact({
     this.contact,

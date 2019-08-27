@@ -22,16 +22,19 @@ class Contactview extends StatelessWidget {
                 margin: EdgeInsets.all(10.0),
                 child: Text(c.contact.displayName)),
             Container(
+                margin: EdgeInsets.all(10.0),
+                child: Text(c.reminderinterval.toString())),
+            Container(
               margin: EdgeInsets.all(10.0),
               child: RaisedButton(
-                onPressed: (){},
+                onPressed: () {},
                 child: Text('Call'),
               ),
             ),
             Container(
               margin: EdgeInsets.all(10.0),
               child: RaisedButton(
-                onPressed: (){},
+                onPressed: () {},
                 child: Text('Set Reminder'),
               ),
             )
