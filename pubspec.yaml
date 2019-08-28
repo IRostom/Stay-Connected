@@ -21,6 +21,7 @@ dependencies:
   simple_permissions: ^0.1.6
   flutter_local_notifications: ^0.8.2
   flutter_picker: ^1.0.13
+  cloud_firestore: ^0.12.9+1
   provider: ^3.0.0
   flutter:
     sdk: flutter

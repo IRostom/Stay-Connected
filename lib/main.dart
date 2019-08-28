@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:stay_connected/screens/contact-view.dart';
-//import 'package:cloud_firestore/cloud_firestore.dart';
-//import 'package:stay_connected/models/customcontact.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:stay_connected/screens/savedcontacts.dart';
 import 'package:stay_connected/screens/allcontacts.dart';
 import 'package:stay_connected/screens/addcontact.dart';
