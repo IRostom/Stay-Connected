@@ -3,6 +3,7 @@ import 'package:stay_connected/models/customcontact.dart';
 import 'package:stay_connected/models/contactlist.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_picker/flutter_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Addcontact extends StatefulWidget {
   Addcontact({
@@ -14,7 +15,6 @@ class Addcontact extends StatefulWidget {
 
 class Addcontactstate extends State<Addcontact> {
   final myController = TextEditingController(text: '7');
-  String dropdownvalue = 'One';
   Addcontactstate();
 
   @override
@@ -28,7 +28,7 @@ class Addcontactstate extends State<Addcontact> {
   @override
   Widget build(BuildContext context) {
     CustomContact c = ModalRoute.of(context).settings.arguments;
-    final phonelist = c.contact.phones.toList();
+    c.primaryphone = c.contact.phones.first.value;
 
     return Scaffold(
       appBar: AppBar(
@@ -40,7 +40,11 @@ class Addcontactstate extends State<Addcontact> {
             onPressed: () {
               c.isChecked = true;
               Provider.of<Contactlist>(context, listen: false).addfav(c);
-              Navigator.pop(context);
+              Firestore.instance
+                  .collection('Contacts')
+                  .document()
+                  .setData({'name': c.contact.displayName, 'phone': c.primaryphone});
+              Navigator.popUntil(context, ModalRoute.withName('/'));
             },
           )
         ],
@@ -74,10 +78,9 @@ class Addcontactstate extends State<Addcontact> {
               child: TextFormField(
                 onFieldSubmitted: (String value) {
                   c.primaryphone = value;
-                  phonelist[0].value = value;
                   print('Saved');
                 },
-                initialValue: phonelist[0].value,
+                initialValue: c.contact.phones.first.value,
                 decoration: InputDecoration(
                     labelText: 'Phone',
                     icon: const Icon(Icons.phone),
@@ -90,32 +93,33 @@ class Addcontactstate extends State<Addcontact> {
               child: TextFormField(
                 controller: myController,
                 decoration: InputDecoration(
-                    labelText: 'Reminder Interval',
-                    icon: const Icon(Icons.schedule),
-                    border: OutlineInputBorder(),
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.more_horiz),
-                      onPressed: (){
-                        new Picker(
-                      adapter: NumberPickerAdapter(data: [
-                        NumberPickerColumn(begin: 0, end: 100),
-                      ]),
-                      delimiter: [
-                        PickerDelimiter(
-                            child: Container(
-                          alignment: Alignment.center,
-                        ))
-                      ],
-                      hideHeader: true,
-                      title: new Text("Please Select"),
-                      onConfirm: (Picker picker, List value) {
-                        setState(() {
-                          c.reminderinterval = value[0];
-                          myController.text = value[0].toString();
-                        });
-                      }).showDialog(context);
-                      },
-                      ),),
+                  labelText: 'Reminder Interval',
+                  icon: const Icon(Icons.schedule),
+                  border: OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.more_horiz),
+                    onPressed: () {
+                      new Picker(
+                          adapter: NumberPickerAdapter(data: [
+                            NumberPickerColumn(begin: 0, end: 100),
+                          ]),
+                          delimiter: [
+                            PickerDelimiter(
+                                child: Container(
+                              alignment: Alignment.center,
+                            ))
+                          ],
+                          hideHeader: true,
+                          title: new Text("Please Select"),
+                          onConfirm: (Picker picker, List value) {
+                            setState(() {
+                              c.reminderinterval = value[0];
+                              myController.text = value[0].toString();
+                            });
+                          }).showDialog(context);
+                    },
+                  ),
+                ),
                 keyboardType: TextInputType.number,
               ),
             ),

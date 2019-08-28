@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:stay_connected/models/customcontact.dart';
+//import 'package:stay_connected/models/customcontact.dart';
+import 'package:stay_connected/models/record.dart';
 
 class Contactview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final CustomContact c = ModalRoute.of(context).settings.arguments;
+    final Record c = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
         title: Text('Contact View'),
@@ -12,18 +13,18 @@ class Contactview extends StatelessWidget {
       body: Center(
         child: Column(
           children: <Widget>[
-            Container(
+            /* Container(
                 margin: EdgeInsets.all(10.0),
                 child: CircleAvatar(
                   backgroundImage: MemoryImage(c.contact.avatar),
                   radius: 70.0,
-                )),
+                )), */
             Container(
                 margin: EdgeInsets.all(10.0),
-                child: Text(c.contact.displayName)),
+                child: Text(c.name)),
             Container(
                 margin: EdgeInsets.all(10.0),
-                child: Text(c.reminderinterval.toString())),
+                child: Text(c.phone)),
             Container(
               margin: EdgeInsets.all(10.0),
               child: RaisedButton(
