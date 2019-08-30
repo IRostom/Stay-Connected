@@ -111,7 +111,8 @@ class _MyHomePageState extends State<MyHomePage> {
       /* list.length >= 1 && list[0]?.value != null
           ? Text(list[0].value)
           : Text(''), */
-       onTap: () => Navigator.pushNamed(context, '/contactview', arguments: record),
+      onTap: () =>
+          Navigator.pushNamed(context, '/contactview', arguments: record),
     );
   }
 

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:stay_connected/screens/contact-view.dart';
+import 'package:stay_connected/screens/contact.dart';
 import 'package:stay_connected/screens/savedcontacts.dart';
-import 'package:stay_connected/screens/allcontacts.dart';
 import 'package:stay_connected/screens/addcontact.dart';
+import 'package:stay_connected/screens/editcontact.dart';
 import 'package:stay_connected/models/contactlist.dart';
 
 

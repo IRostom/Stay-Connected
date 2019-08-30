@@ -13,6 +13,7 @@ class CustomContact {
     this.isChecked = false,
     this.id = 0,
     this.creation,
-    this.reminderinterval = 7
+    this.reminderinterval = 7,
+    this.primaryphone,
   });
 }

@@ -1,131 +1,73 @@
 import 'package:flutter/material.dart';
 import 'package:stay_connected/models/customcontact.dart';
+import 'package:contacts_service/contacts_service.dart';
 import 'package:stay_connected/models/contactlist.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_picker/flutter_picker.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Addcontact extends StatefulWidget {
-  Addcontact({
+class SecondRoute extends StatefulWidget {
+  SecondRoute({
     Key key,
   }) : super(key: key);
+
   @override
-  State<StatefulWidget> createState() => new Addcontactstate();
+  _SecondRouteState createState() => new _SecondRouteState();
 }
 
-class Addcontactstate extends State<Addcontact> {
-  final myController = TextEditingController(text: '7');
-  Addcontactstate();
-
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is removed from the
-    // widget tree.
-    myController.dispose();
-    super.dispose();
-  }
+class _SecondRouteState extends State<SecondRoute> {
+  final bool isLoading = false;
+  List<CustomContact> _allContacts = new List<CustomContact>();
+  _SecondRouteState();
 
   @override
   Widget build(BuildContext context) {
-    CustomContact c = ModalRoute.of(context).settings.arguments;
-    c.primaryphone = c.contact.phones.first.value;
-
+    _allContacts = Provider.of<Contactlist>(context, listen: false).allcontacts;
+    /* _uiCustomContacts = _allContacts; */
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add New Contact'),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.check),
-            tooltip: 'Save Contact to favorites',
-            onPressed: () {
-              c.isChecked = true;
-              Provider.of<Contactlist>(context, listen: false).addfav(c);
-              Firestore.instance
-                  .collection('Contacts')
-                  .document()
-                  .setData({'name': c.contact.displayName, 'phone': c.primaryphone});
-              Navigator.popUntil(context, ModalRoute.withName('/'));
-            },
-          )
-        ],
+        title: Text('All Contacts'),
       ),
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            Container(
-                margin: EdgeInsets.all(10.0),
-                child: CircleAvatar(
-                  backgroundImage: MemoryImage(c.contact.avatar),
-                  radius: 70.0,
-                )),
-            Container(
-              margin: EdgeInsets.all(10.0),
-              child: TextFormField(
-                onFieldSubmitted: (String value) {
-                  c.contact.displayName = value;
-                  print('Saved');
+      body: !isLoading
+          ? Container(
+              child: ListView.builder(
+                itemCount: _allContacts?.length,
+                itemBuilder: (BuildContext context, int index) {
+                  CustomContact _contact = _allContacts[index];
+                  var _phonesList = _contact.contact.phones.toList();
+
+                  return _buildListTile(_contact, _phonesList);
                 },
-                initialValue: c.contact.displayName,
-                decoration: InputDecoration(
-                    labelText: 'Display Name',
-                    icon: const Icon(Icons.person),
-                    border: OutlineInputBorder()),
-                textCapitalization: TextCapitalization.words,
               ),
+            )
+          : Center(
+              child: CircularProgressIndicator(),
             ),
-            Container(
-              margin: EdgeInsets.all(10.0),
-              child: TextFormField(
-                onFieldSubmitted: (String value) {
-                  c.primaryphone = value;
-                  print('Saved');
-                },
-                initialValue: c.contact.phones.first.value,
-                decoration: InputDecoration(
-                    labelText: 'Phone',
-                    icon: const Icon(Icons.phone),
-                    border: OutlineInputBorder()),
-                keyboardType: TextInputType.phone,
-              ),
+    );
+  }
+
+  ListTile _buildListTile(CustomContact c, List<Item> list) {
+    return ListTile(
+      leading: (c.contact.avatar != null)
+          ? CircleAvatar(backgroundImage: MemoryImage(c.contact.avatar))
+          : CircleAvatar(
+              child: Text(
+                  (c.contact.displayName[0] +
+                      c.contact.displayName[1].toUpperCase()),
+                  style: TextStyle(color: Colors.white)),
             ),
-            Container(
-              margin: EdgeInsets.all(10.0),
-              child: TextFormField(
-                controller: myController,
-                decoration: InputDecoration(
-                  labelText: 'Reminder Interval',
-                  icon: const Icon(Icons.schedule),
-                  border: OutlineInputBorder(),
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.more_horiz),
-                    onPressed: () {
-                      new Picker(
-                          adapter: NumberPickerAdapter(data: [
-                            NumberPickerColumn(begin: 0, end: 100),
-                          ]),
-                          delimiter: [
-                            PickerDelimiter(
-                                child: Container(
-                              alignment: Alignment.center,
-                            ))
-                          ],
-                          hideHeader: true,
-                          title: new Text("Please Select"),
-                          onConfirm: (Picker picker, List value) {
-                            setState(() {
-                              c.reminderinterval = value[0];
-                              myController.text = value[0].toString();
-                            });
-                          }).showDialog(context);
-                    },
-                  ),
-                ),
-                keyboardType: TextInputType.number,
-              ),
-            ),
-          ],
-        ),
-      ),
+      title: Text(c.contact.displayName ?? ""),
+      subtitle: list.length >= 1 && list[0]?.value != null
+          ? Text(list[0].value)
+          : Text(''),
+      /* trailing: Checkbox(
+          activeColor: Colors.green,
+          value: c.isChecked,
+          onChanged: (bool value) {
+            setState(() {
+              c.isChecked = value;
+            });
+            Provider.of<Contactlist>(context, listen: false).addfav(c);
+          }), */
+      onTap: () => Navigator.pushNamed(context, '/addcontact', arguments: c),
     );
   }
 }
