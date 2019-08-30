@@ -62,8 +62,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    /* _uiCustomContacts =
-        Provider.of<Contactlist>(context, listen: false).favcontacts; */
 
     return new Scaffold(
       appBar: new AppBar(

@@ -9,6 +9,15 @@ class Contactview extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Contact View'),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.edit),
+            tooltip: 'Edit Contact',
+            onPressed: () {
+             
+            }
+          )
+          ]
       ),
       body: Center(
         child: Column(
