@@ -52,7 +52,7 @@ class Contactlist extends ChangeNotifier {
     _contacts = contacts.where((item) => item.displayName != null).toList();
     _contacts.sort((a, b) => a.displayName.compareTo(b.displayName));
     _allContacts =
-        _contacts.map((contact) => CustomContact(contact: contact, primaryphone: contact.phones.first.value)).toList();
+        _contacts.map((contact) => CustomContact(contact: contact, primaryphone: contact.phones.first.value, displayname: contact.displayName)).toList();
   }
 
   Future<void> _scheduleNotification() async {
