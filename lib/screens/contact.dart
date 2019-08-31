@@ -1,11 +1,13 @@
+import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
-//import 'package:stay_connected/models/customcontact.dart';
+import 'package:stay_connected/models/customcontact.dart';
 import 'package:stay_connected/models/record.dart';
 
 class Contactview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final Record c = ModalRoute.of(context).settings.arguments;
+    final Record record = ModalRoute.of(context).settings.arguments;
+    
     return Scaffold(
       appBar: AppBar(
         title: Text('Contact View'),
@@ -14,7 +16,12 @@ class Contactview extends StatelessWidget {
             icon: const Icon(Icons.edit),
             tooltip: 'Edit Contact',
             onPressed: () {
-             
+              Contact contact = new Contact();
+              CustomContact customContact = new CustomContact(contact: contact);
+              //contact.fromrecord(record);
+              customContact.primaryphone = record.phone;
+              customContact.contact.displayName = record.name;
+              Navigator.pushNamed(context, '/editcontact', arguments: customContact);
             }
           )
           ]
@@ -30,10 +37,10 @@ class Contactview extends StatelessWidget {
                 )), */
             Container(
                 margin: EdgeInsets.all(10.0),
-                child: Text(c.name)),
+                child: Text(record.name)),
             Container(
                 margin: EdgeInsets.all(10.0),
-                child: Text(c.phone)),
+                child: Text(record.phone)),
             Container(
               margin: EdgeInsets.all(10.0),
               child: RaisedButton(

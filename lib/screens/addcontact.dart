@@ -67,7 +67,7 @@ class _SecondRouteState extends State<SecondRoute> {
             });
             Provider.of<Contactlist>(context, listen: false).addfav(c);
           }), */
-      onTap: () => Navigator.pushNamed(context, '/addcontact', arguments: c),
+      onTap: () => Navigator.pushNamed(context, '/editcontact', arguments: c),
     );
   }
 }

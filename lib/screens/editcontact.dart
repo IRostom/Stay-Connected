@@ -4,19 +4,28 @@ import 'package:stay_connected/models/customcontact.dart';
 //import 'package:stay_connected/models/contactlist.dart';
 // import 'package:provider/provider.dart';
 import 'package:flutter_picker/flutter_picker.dart';
+import 'package:stay_connected/models/record.dart';
+
 
 class Addcontact extends StatefulWidget {
-  Addcontact({
-    Key key,
-  }) : super(key: key);
+  bool update = false;
+
+  Addcontact({bool update}) {
+    this.update = update;
+  }
 
   @override
-  State<StatefulWidget> createState() => new Addcontactstate();
+  State<StatefulWidget> createState() => new Addcontactstate(update);
 }
 
 class Addcontactstate extends State<Addcontact> {
   final myController = TextEditingController(text: '7');
-  Addcontactstate();
+  Record record;
+  CustomContact contact;
+  bool update = false;
+  Addcontactstate(bool update){
+    this.update = update;
+  }
 
   @override
   void dispose() {
@@ -47,12 +56,12 @@ class Addcontactstate extends State<Addcontact> {
       body: Center(
         child: Column(
           children: <Widget>[
-            Container(
+            /* Container(
                 margin: EdgeInsets.all(10.0),
                 child: CircleAvatar(
                   backgroundImage: MemoryImage(c.contact.avatar),
                   radius: 70.0,
-                )),
+                )), */
             Container(
               margin: EdgeInsets.all(10.0),
               child: TextFormField(
@@ -126,16 +135,17 @@ class Addcontactstate extends State<Addcontact> {
 
 void createdoc(CustomContact customcontact, {bool newdoc: false}) {
   String documentID = !newdoc ? customcontact.contact.displayName : null;
-  Firestore.instance
-      .collection('Contacts')
-      .document(documentID)
-      .setData({'name': customcontact.contact.displayName, 'phone': customcontact.primaryphone});
+  Firestore.instance.collection('Contacts').document(documentID).setData({
+    'name': customcontact.contact.displayName,
+    'phone': customcontact.primaryphone
+  });
 }
 
 void updatedoc(String documentID, CustomContact customcontact) {
-  Firestore.instance.collection('Contacts')
-  .document(documentID)
-  .updateData({'name': customcontact.contact.displayName, 'phone': customcontact.primaryphone});
+  Firestore.instance.collection('Contacts').document(documentID).updateData({
+    'name': customcontact.contact.displayName,
+    'phone': customcontact.primaryphone
+  });
   print(customcontact.primaryphone);
 }
 
@@ -150,29 +160,29 @@ void updatedb(CustomContact customContact, BuildContext context) {
       Navigator.popUntil(context, ModalRoute.withName('/'));
     } else if (data.documents.length == 1) {
       //data.documents.forEach((doc) {
-        DocumentSnapshot documentSnapshot = data.documents[0];
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Conflict!'),
-            content: const Text(
-                'Another contact with the same name exists in your database!'),
-            actions: <Widget>[
-              FlatButton(
-                  child: const Text('Merge'),
-                  onPressed: () {
-                    updatedoc(documentSnapshot.documentID, customContact);
-                    Navigator.popUntil(context, ModalRoute.withName('/'));
-                  }),
-              FlatButton(
-                  child: const Text('Create new'),
-                  onPressed: () {
-                    createdoc(customContact, newdoc: true);
-                    Navigator.popUntil(context, ModalRoute.withName('/'));
-                  })
-            ],
-          ),
-        );
+      DocumentSnapshot documentSnapshot = data.documents[0];
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Conflict!'),
+          content: const Text(
+              'Another contact with the same name exists in your database!'),
+          actions: <Widget>[
+            FlatButton(
+                child: const Text('Merge'),
+                onPressed: () {
+                  updatedoc(documentSnapshot.documentID, customContact);
+                  Navigator.popUntil(context, ModalRoute.withName('/'));
+                }),
+            FlatButton(
+                child: const Text('Create new'),
+                onPressed: () {
+                  createdoc(customContact, newdoc: true);
+                  Navigator.popUntil(context, ModalRoute.withName('/'));
+                })
+          ],
+        ),
+      );
       //}
     }
   });

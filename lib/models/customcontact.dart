@@ -1,4 +1,5 @@
 import 'package:contacts_service/contacts_service.dart';
+import 'package:stay_connected/models/record.dart';
 
 class CustomContact {
   final Contact contact;
@@ -16,4 +17,15 @@ class CustomContact {
     this.reminderinterval = 7,
     this.primaryphone,
   });
+
+  /* CustomContact.fromrecord(Record record) {
+    this.contact = Contact();
+    this.primaryphone = record.phone;
+    this.contact.displayName = record.name;
+  } */
+
+   /* fromrecord(Record record){
+    primaryphone = record.phone;
+    this.contact.displayName = record.name;
+  } */
 }

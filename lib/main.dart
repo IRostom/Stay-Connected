@@ -25,10 +25,10 @@ class MyApp extends StatelessWidget {
       ),
         initialRoute: '/',
         routes: {
-        '/': (context) => MyHomePage(title: 'Custom contact selection'),
-        '/allcontacts': (context) => SecondRoute(),
+        '/': (context) => MyHomePage(title: 'Custom contact selection'), //saved contacts
+        '/allcontacts': (context) => SecondRoute(),  // all contacts
         '/contactview': (context) => Contactview(),
-        '/addcontact': (context) => Addcontact(),
+        '/editcontact': (context) => Addcontact(),
       },
       ),
     );
