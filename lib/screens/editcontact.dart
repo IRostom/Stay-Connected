@@ -1,21 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:stay_connected/models/arguments.dart';
 import 'package:stay_connected/models/customcontact.dart';
 //import 'package:stay_connected/models/contactlist.dart';
 // import 'package:provider/provider.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:stay_connected/models/record.dart';
 
-
 class Addcontact extends StatefulWidget {
-  bool update = false;
-
-  Addcontact({bool update}) {
-    this.update = update;
-  }
+  Addcontact();
 
   @override
-  State<StatefulWidget> createState() => new Addcontactstate(update);
+  State<StatefulWidget> createState() => new Addcontactstate();
 }
 
 class Addcontactstate extends State<Addcontact> {
@@ -23,9 +19,7 @@ class Addcontactstate extends State<Addcontact> {
   Record record;
   CustomContact contact;
   bool update = false;
-  Addcontactstate(bool update){
-    this.update = update;
-  }
+  Addcontactstate();
 
   @override
   void dispose() {
@@ -37,18 +31,28 @@ class Addcontactstate extends State<Addcontact> {
 
   @override
   Widget build(BuildContext context) {
-    CustomContact c = ModalRoute.of(context).settings.arguments;
-    print('build');
+    ViewArguments arguments = ModalRoute.of(context).settings.arguments;
+    CustomContact customContact = arguments.customContact;
+    bool updatecontact = arguments.expression;
+    print('build started');
     return Scaffold(
       appBar: AppBar(
         title: Text('Add New Contact'),
         actions: <Widget>[
           IconButton(
-            icon: const Icon(Icons.check),
-            tooltip: 'Save Contact to favorites',
+            icon: updatecontact ? Icon(Icons.check) : Icon(Icons.add_circle),
+            tooltip: updatecontact ? 'Save contact to list' : 'Update contact',
             onPressed: () {
-              c.isChecked = true;
-              updatedb(c, context);
+              customContact.isChecked = true;
+              /* updatecontact
+                  ? updatedoc(arguments.documentID, customContact)
+                  : updatedb(customContact, context); */
+                  if (updatecontact) {
+                    updatedoc(arguments.documentID, customContact);
+                    Navigator.popUntil(context, ModalRoute.withName('/'));
+                  } else {
+                     updatedb(customContact, context);
+                  }
             },
           )
         ],
@@ -59,17 +63,17 @@ class Addcontactstate extends State<Addcontact> {
             /* Container(
                 margin: EdgeInsets.all(10.0),
                 child: CircleAvatar(
-                  backgroundImage: MemoryImage(c.contact.avatar),
+                  backgroundImage: MemoryImage(customContact.contact.avatar),
                   radius: 70.0,
                 )), */
             Container(
               margin: EdgeInsets.all(10.0),
               child: TextFormField(
                 onFieldSubmitted: (String value) {
-                  c.contact.displayName = value;
+                  customContact.displayname = value;
                   print('Saved');
                 },
-                initialValue: c.contact.displayName,
+                initialValue: customContact.displayname,
                 decoration: InputDecoration(
                     labelText: 'Display Name',
                     icon: const Icon(Icons.person),
@@ -81,9 +85,9 @@ class Addcontactstate extends State<Addcontact> {
               margin: EdgeInsets.all(10.0),
               child: TextFormField(
                 onFieldSubmitted: (String value) {
-                  c.primaryphone = value;
+                  customContact.primaryphone = value;
                 },
-                initialValue: c.primaryphone,
+                initialValue: customContact.primaryphone,
                 decoration: InputDecoration(
                     labelText: 'Phone',
                     icon: const Icon(Icons.phone),
@@ -116,7 +120,7 @@ class Addcontactstate extends State<Addcontact> {
                           title: new Text("Please Select"),
                           onConfirm: (Picker picker, List value) {
                             setState(() {
-                              c.reminderinterval = value[0];
+                              customContact.reminderinterval = value[0];
                               myController.text = value[0].toString();
                             });
                           }).showDialog(context);
@@ -142,10 +146,8 @@ void createdoc(CustomContact customcontact, {bool newdoc: false}) {
 }
 
 void updatedoc(String documentID, CustomContact customcontact) {
-  Firestore.instance.collection('Contacts').document(documentID).updateData({
-    'name': customcontact.contact.displayName,
-    'phone': customcontact.primaryphone
-  });
+  Firestore.instance.collection('Contacts').document(documentID).updateData(
+      {'name': customcontact.displayname, 'phone': customcontact.primaryphone});
   print(customcontact.primaryphone);
 }
 

@@ -1,5 +1,6 @@
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
+import 'package:stay_connected/models/arguments.dart';
 import 'package:stay_connected/models/customcontact.dart';
 import 'package:stay_connected/models/record.dart';
 
@@ -18,10 +19,8 @@ class Contactview extends StatelessWidget {
             onPressed: () {
               Contact contact = new Contact();
               CustomContact customContact = new CustomContact(contact: contact);
-              //contact.fromrecord(record);
-              customContact.primaryphone = record.phone;
-              customContact.contact.displayName = record.name;
-              Navigator.pushNamed(context, '/editcontact', arguments: customContact);
+              customContact.fromrecord(record);
+              Navigator.pushNamed(context, '/editcontact', arguments: ViewArguments(customContact,true,documentID: record.docID));
             }
           )
           ]

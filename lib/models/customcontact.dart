@@ -8,6 +8,7 @@ class CustomContact {
   DateTime creation;
   int reminderinterval;
   String primaryphone;
+  String displayname;
 
   CustomContact({
     this.contact,
@@ -16,16 +17,11 @@ class CustomContact {
     this.creation,
     this.reminderinterval = 7,
     this.primaryphone,
+    this.displayname,
   });
 
-  /* CustomContact.fromrecord(Record record) {
-    this.contact = Contact();
-    this.primaryphone = record.phone;
-    this.contact.displayName = record.name;
-  } */
-
-   /* fromrecord(Record record){
+   fromrecord(Record record){
     primaryphone = record.phone;
-    this.contact.displayName = record.name;
-  } */
+    displayname = record.name;
+  }
 }

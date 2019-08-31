@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stay_connected/models/arguments.dart';
 import 'package:stay_connected/models/customcontact.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:stay_connected/models/contactlist.dart';
@@ -67,7 +68,7 @@ class _SecondRouteState extends State<SecondRoute> {
             });
             Provider.of<Contactlist>(context, listen: false).addfav(c);
           }), */
-      onTap: () => Navigator.pushNamed(context, '/editcontact', arguments: c),
+      onTap: () => Navigator.pushNamed(context, '/editcontact', arguments: ViewArguments(c, false)),
     );
   }
 }
