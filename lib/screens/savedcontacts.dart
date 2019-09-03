@@ -74,12 +74,18 @@ class _MyHomePageState extends State<MyHomePage> {
     });
     trysignin();
     streamSubscription = authService.firebaseuser
-        .listen((firebaseuser) => setState(() => firebaseUser = firebaseuser));
+        .listen((firebaseuser) {
+          setState(() => firebaseUser = firebaseuser);
+          print('new activity');
+        });
+
+        print("broadcast: "+authService.firebaseuser.isBroadcast.toString());
   }
 
   @override
   void dispose() {
     streamSubscription.cancel();
+    print(" savedcontacts disposed");
     super.dispose();
   }
 

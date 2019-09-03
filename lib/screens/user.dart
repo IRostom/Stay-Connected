@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:stay_connected/models/GoogleAuthentication.dart';
-//import 'package:firebase_auth/firebase_auth.dart';
 
 class Userview extends StatefulWidget {
   @override
@@ -27,6 +26,7 @@ class _UserviewState extends State<Userview> {
   void dispose() {
     streamSubscription.cancel();
     streamSubscription2.cancel();
+    print("disposed");
     super.dispose();
   }
 

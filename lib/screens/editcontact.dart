@@ -1,11 +1,12 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:stay_connected/models/GoogleAuthentication.dart';
 import 'package:stay_connected/models/arguments.dart';
 import 'package:stay_connected/models/customcontact.dart';
-//import 'package:stay_connected/models/contactlist.dart';
-// import 'package:provider/provider.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:stay_connected/models/record.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Addcontact extends StatefulWidget {
   Addcontact();
@@ -20,12 +21,25 @@ class Addcontactstate extends State<Addcontact> {
   CustomContact contact;
   bool update = false;
   Addcontactstate();
+  FirebaseUser firebaseUser;
+  StreamSubscription streamSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    streamSubscription =
+        authService.user.listen((FirebaseUser u) {
+          firebaseUser = u;
+          print(u.displayName);
+        });
+  }
 
   @override
   void dispose() {
     // Clean up the controller when the widget is removed from the
     // widget tree.
     myController.dispose();
+    streamSubscription.cancel();
     super.dispose();
   }
 
@@ -47,12 +61,12 @@ class Addcontactstate extends State<Addcontact> {
               /* updatecontact
                   ? updatedoc(arguments.documentID, customContact)
                   : updatedb(customContact, context); */
-                  if (updatecontact) {
-                    updatedoc(arguments.documentID, customContact);
-                    Navigator.popUntil(context, ModalRoute.withName('/'));
-                  } else {
-                     updatedb(customContact, context);
-                  }
+              if (updatecontact) {
+                updatedoc(arguments.documentID, customContact);
+                Navigator.popUntil(context, ModalRoute.withName('/'));
+              } else {
+                updatedb(customContact, context);
+              }
             },
           )
         ],
@@ -135,57 +149,72 @@ class Addcontactstate extends State<Addcontact> {
       ),
     );
   }
-}
 
-void createdoc(CustomContact customcontact, {bool newdoc: false}) {
-  String documentID = !newdoc ? customcontact.contact.displayName : null;
-  Firestore.instance.collection('Contacts').document(documentID).setData({
-    'name': customcontact.contact.displayName,
-    'phone': customcontact.primaryphone
-  });
-}
+  void createdoc(CustomContact customcontact, {bool newdoc: false}) {
+    String documentID = !newdoc ? customcontact.contact.displayName : null;
+    Firestore.instance
+        .collection('users')
+        .document(firebaseUser.uid)
+        .collection('contacts')
+        .document(documentID)
+        .setData({
+      'name': customcontact.contact.displayName,
+      'phone': customcontact.primaryphone
+    });
+  }
 
-void updatedoc(String documentID, CustomContact customcontact) {
-  Firestore.instance.collection('Contacts').document(documentID).updateData(
-      {'name': customcontact.displayname, 'phone': customcontact.primaryphone});
-  print(customcontact.primaryphone);
-}
+  void updatedoc(String documentID, CustomContact customcontact) {
 
-void updatedb(CustomContact customContact, BuildContext context) {
-  Firestore.instance
-      .collection('Contacts')
-      .where('name', isEqualTo: customContact.contact.displayName.toString())
-      .getDocuments()
-      .then((data) {
-    if (data.documents.length == 0) {
-      createdoc(customContact);
-      Navigator.popUntil(context, ModalRoute.withName('/'));
-    } else if (data.documents.length == 1) {
-      //data.documents.forEach((doc) {
-      DocumentSnapshot documentSnapshot = data.documents[0];
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Conflict!'),
-          content: const Text(
-              'Another contact with the same name exists in your database!'),
-          actions: <Widget>[
-            FlatButton(
-                child: const Text('Merge'),
-                onPressed: () {
-                  updatedoc(documentSnapshot.documentID, customContact);
-                  Navigator.popUntil(context, ModalRoute.withName('/'));
-                }),
-            FlatButton(
-                child: const Text('Create new'),
-                onPressed: () {
-                  createdoc(customContact, newdoc: true);
-                  Navigator.popUntil(context, ModalRoute.withName('/'));
-                })
-          ],
-        ),
-      );
-      //}
-    }
-  });
+    Firestore.instance
+        .collection('users')
+        .document(firebaseUser.uid)
+        .collection('contacts')
+        .document(documentID)
+        .updateData({
+      'name': customcontact.displayname,
+      'phone': customcontact.primaryphone
+    });
+    print(customcontact.primaryphone);
+  }
+
+  void updatedb(CustomContact customContact, BuildContext context) {
+    Firestore.instance
+        .collection('users')
+        .document(firebaseUser.uid)
+        .collection('contacts')
+        .where('name', isEqualTo: customContact.contact.displayName.toString())
+        .getDocuments()
+        .then((data) {
+      if (data.documents.length == 0) {
+        createdoc(customContact);
+        Navigator.popUntil(context, ModalRoute.withName('/'));
+      } else if (data.documents.length == 1) {
+        //data.documents.forEach((doc) {
+        DocumentSnapshot documentSnapshot = data.documents[0];
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Conflict!'),
+            content: const Text(
+                'Another contact with the same name exists in your database!'),
+            actions: <Widget>[
+              FlatButton(
+                  child: const Text('Merge'),
+                  onPressed: () {
+                    updatedoc(documentSnapshot.documentID, customContact);
+                    Navigator.popUntil(context, ModalRoute.withName('/'));
+                  }),
+              FlatButton(
+                  child: const Text('Create new'),
+                  onPressed: () {
+                    createdoc(customContact, newdoc: true);
+                    Navigator.popUntil(context, ModalRoute.withName('/'));
+                  })
+            ],
+          ),
+        );
+        //}
+      }
+    });
+  }
 }

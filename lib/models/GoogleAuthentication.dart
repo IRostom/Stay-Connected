@@ -19,7 +19,7 @@ class AuthService {
 
   // constructor
   AuthService() {
-    user = Observable(_auth.onAuthStateChanged);
+    user= Observable(_auth.onAuthStateChanged);
     firebaseuser = Observable(_auth.onAuthStateChanged);
 
     profile = user.switchMap((FirebaseUser u) {
