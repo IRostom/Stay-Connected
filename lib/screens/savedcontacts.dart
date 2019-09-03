@@ -1,11 +1,14 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-// import 'package:stay_connected/models/customcontact.dart';
 import 'package:stay_connected/models/contactlist.dart';
-// import 'package:contacts_service/contacts_service.dart';
 import 'package:simple_permissions/simple_permissions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:stay_connected/models/record.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:stay_connected/models/GoogleAuthentication.dart';
+import 'package:stay_connected/screens/user.dart';
+
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -24,16 +27,27 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // List<CustomContact> _uiCustomContacts = new List<CustomContact>();
   String floatingButtonLabel;
   Color floatingButtonColor;
   IconData icon;
+  FirebaseUser firebaseUser;
+  StreamSubscription streamSubscription;
 
   _MyHomePageState({
     this.floatingButtonLabel,
     this.icon,
     this.floatingButtonColor,
   });
+
+  void trysignin() async {
+    FirebaseUser _firebaseuser;
+    _firebaseuser = await authService.trySignInWithGoogle();
+    if (_firebaseuser == null) {
+      // TO DO : return to this view after sigining in and getting credentials.
+      Navigator.push(context,
+          MaterialPageRoute<FirebaseUser>(builder: (context) => Userview()));
+    }
+  }
 
   @override
   void initState() {
@@ -58,23 +72,42 @@ class _MyHomePageState extends State<MyHomePage> {
         );
       }
     });
+    trysignin();
+    streamSubscription = authService.firebaseuser
+        .listen((firebaseuser) => setState(() => firebaseUser = firebaseuser));
+  }
+
+  @override
+  void dispose() {
+    streamSubscription.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text(widget.title),
-      ),
+      appBar: new AppBar(title: new Text(widget.title), actions: <Widget>[
+        IconButton(
+            icon: const Icon(Icons.edit),
+            tooltip: 'Edit Contact',
+            onPressed: () {
+              Navigator.pushNamed(context, '/user');
+            })
+      ]),
       body: Container(
-          child: StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('Contacts').snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) return LinearProgressIndicator();
-          return _buildList(context, snapshot.data.documents);
-        },
-      )),
+          child: (firebaseUser != null)
+              ? StreamBuilder<QuerySnapshot>(
+                  stream: Firestore.instance
+                      .collection('users')
+                      .document(firebaseUser.uid)
+                      .collection('contacts')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) return LinearProgressIndicator();
+                    return _buildList(context, snapshot.data.documents);
+                  },
+                )
+              : Text('Sign in')),
       floatingActionButton: new FloatingActionButton.extended(
         backgroundColor: floatingButtonColor,
         onPressed: () => Navigator.pushNamed(context, '/allcontacts'),
