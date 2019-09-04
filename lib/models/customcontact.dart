@@ -3,8 +3,8 @@ import 'package:stay_connected/models/record.dart';
 
 class CustomContact {
   final Contact contact;
-  bool isChecked;
-  int id;
+  //bool isChecked;
+  //int id;
   DateTime creation;
   int reminderinterval;
   String primaryphone;
@@ -12,8 +12,8 @@ class CustomContact {
 
   CustomContact({
     this.contact,
-    this.isChecked = false,
-    this.id = 0,
+    //this.isChecked = false,
+    //this.id = 0,
     this.creation,
     this.reminderinterval = 7,
     this.primaryphone,

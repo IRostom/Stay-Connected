@@ -4,7 +4,6 @@ import 'package:stay_connected/screens/contact.dart';
 import 'package:stay_connected/screens/savedcontacts.dart';
 import 'package:stay_connected/screens/addcontact.dart';
 import 'package:stay_connected/screens/editcontact.dart';
-//import 'package:stay_connected/screens/loginscreen.dart';
 import 'package:stay_connected/models/contactlist.dart';
 import 'package:stay_connected/screens/user.dart';
 

@@ -57,7 +57,7 @@ class Addcontactstate extends State<Addcontact> {
             icon: updatecontact ? Icon(Icons.check) : Icon(Icons.add_circle),
             tooltip: updatecontact ? 'Save contact to list' : 'Update contact',
             onPressed: () {
-              customContact.isChecked = true;
+              //customContact.isChecked = true;
               /* updatecontact
                   ? updatedoc(arguments.documentID, customContact)
                   : updatedb(customContact, context); */
