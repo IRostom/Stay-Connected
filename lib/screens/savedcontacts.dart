@@ -143,8 +143,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       c.contact.displayName[1].toUpperCase()),
                   style: TextStyle(color: Colors.white)),
             ), */
-      title: Text(record.name ?? ""),
-      subtitle: Text(record.phone ?? ""),
+      title: Text(record.displayname ?? ""),
+      subtitle: Text(record.primaryphone ?? ""),
       /* list.length >= 1 && list[0]?.value != null
           ? Text(list[0].value)
           : Text(''), */

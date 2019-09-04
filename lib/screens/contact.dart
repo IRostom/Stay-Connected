@@ -36,10 +36,10 @@ class Contactview extends StatelessWidget {
                 )), */
             Container(
                 margin: EdgeInsets.all(10.0),
-                child: Text(record.name)),
+                child: Text(record.displayname)),
             Container(
                 margin: EdgeInsets.all(10.0),
-                child: Text(record.phone)),
+                child: Text(record.primaryphone)),
             Container(
               margin: EdgeInsets.all(10.0),
               child: RaisedButton(

@@ -6,10 +6,6 @@ import 'package:stay_connected/models/contactlist.dart';
 import 'package:provider/provider.dart';
 
 class SecondRoute extends StatefulWidget {
-  SecondRoute({
-    Key key,
-  }) : super(key: key);
-
   @override
   _SecondRouteState createState() => new _SecondRouteState();
 }
@@ -17,7 +13,6 @@ class SecondRoute extends StatefulWidget {
 class _SecondRouteState extends State<SecondRoute> {
   final bool isLoading = false;
   List<CustomContact> _allContacts = new List<CustomContact>();
-  _SecondRouteState();
 
   @override
   Widget build(BuildContext context) {

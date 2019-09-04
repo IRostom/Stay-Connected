@@ -4,14 +4,13 @@ import 'package:contacts_service/contacts_service.dart';
 //import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 //import 'dart:async';
 
-
 class Contactlist extends ChangeNotifier {
   List<Contact> _contacts = new List<Contact>();
   List<CustomContact> _allContacts = new List<CustomContact>();
   //List<CustomContact> _favContact = new List<CustomContact>();
   //FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   //String name;
-  
+
   Contactlist() {
     refreshContacts();
     /* flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
@@ -51,8 +50,15 @@ class Contactlist extends ChangeNotifier {
   void _populateContacts(Iterable<Contact> contacts) {
     _contacts = contacts.where((item) => item.displayName != null).toList();
     _contacts.sort((a, b) => a.displayName.compareTo(b.displayName));
-    _allContacts =
-        _contacts.map((contact) => CustomContact(contact: contact, primaryphone: contact.phones.first.value, displayname: contact.displayName)).toList();
+    _allContacts = _contacts
+        .map((contact) => CustomContact(
+              contact: contact,
+              displayname: contact.displayName,
+              primaryphone:
+                  (contact.phones.isEmpty) ? "" : contact.phones.first.value,
+              email: (contact.emails.isEmpty) ? "" : contact.emails.first.value,
+            ))
+        .toList();
   }
 
   /* Future<void> _scheduleNotification() async {
