@@ -8,36 +8,30 @@ import 'package:flutter_picker/flutter_picker.dart';
 import 'package:stay_connected/models/record.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class Addcontact extends StatefulWidget {
-  Addcontact();
-
+class Editcontact extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => new Addcontactstate();
 }
 
-class Addcontactstate extends State<Addcontact> {
+class Addcontactstate extends State<Editcontact> {
   final myController = TextEditingController(text: '7');
   Record record;
   CustomContact contact;
   bool update = false;
-  Addcontactstate();
   FirebaseUser firebaseUser;
   StreamSubscription streamSubscription;
 
   @override
   void initState() {
     super.initState();
-    streamSubscription =
-        authService.user.listen((FirebaseUser u) {
-          firebaseUser = u;
-          print(u.displayName);
-        });
+    streamSubscription = authService.user.listen((FirebaseUser u) {
+      firebaseUser = u;
+      print(u.displayName);
+    });
   }
 
   @override
   void dispose() {
-    // Clean up the controller when the widget is removed from the
-    // widget tree.
     myController.dispose();
     streamSubscription.cancel();
     super.dispose();
@@ -54,13 +48,9 @@ class Addcontactstate extends State<Addcontact> {
         title: Text('Add New Contact'),
         actions: <Widget>[
           IconButton(
-            icon: updatecontact ? Icon(Icons.check) : Icon(Icons.add_circle),
-            tooltip: updatecontact ? 'Save contact to list' : 'Update contact',
+            icon: updatecontact ? Icon(Icons.update) : Icon(Icons.add_circle),
+            tooltip: updatecontact ? 'Save contact' : 'Update contact',
             onPressed: () {
-              //customContact.isChecked = true;
-              /* updatecontact
-                  ? updatedoc(arguments.documentID, customContact)
-                  : updatedb(customContact, context); */
               if (updatecontact) {
                 updatedoc(arguments.documentID, customContact);
                 Navigator.popUntil(context, ModalRoute.withName('/'));
@@ -158,21 +148,20 @@ class Addcontactstate extends State<Addcontact> {
         .collection('contacts')
         .document(documentID)
         .setData({
-      'name': customcontact.contact.displayName,
-      'phone': customcontact.primaryphone
+      'displayname': customcontact.contact.displayName,
+      'primaryphone': customcontact.primaryphone
     });
   }
 
   void updatedoc(String documentID, CustomContact customcontact) {
-
     Firestore.instance
         .collection('users')
         .document(firebaseUser.uid)
         .collection('contacts')
         .document(documentID)
         .updateData({
-      'name': customcontact.displayname,
-      'phone': customcontact.primaryphone
+      'displayname': customcontact.displayname,
+      'primaryphone': customcontact.primaryphone
     });
     print(customcontact.primaryphone);
   }
@@ -182,14 +171,13 @@ class Addcontactstate extends State<Addcontact> {
         .collection('users')
         .document(firebaseUser.uid)
         .collection('contacts')
-        .where('name', isEqualTo: customContact.contact.displayName.toString())
+        .where('displayname', isEqualTo: customContact.contact.displayName.toString())
         .getDocuments()
         .then((data) {
       if (data.documents.length == 0) {
         createdoc(customContact);
         Navigator.popUntil(context, ModalRoute.withName('/'));
       } else if (data.documents.length == 1) {
-        //data.documents.forEach((doc) {
         DocumentSnapshot documentSnapshot = data.documents[0];
         showDialog(
           context: context,
@@ -213,7 +201,6 @@ class Addcontactstate extends State<Addcontact> {
             ],
           ),
         );
-        //}
       }
     });
   }

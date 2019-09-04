@@ -1,39 +1,32 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:stay_connected/models/contactlist.dart';
-import 'package:simple_permissions/simple_permissions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:stay_connected/models/record.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:stay_connected/models/GoogleAuthentication.dart';
 import 'package:stay_connected/screens/user.dart';
 
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
+class SavedContact extends StatefulWidget {
   final String fireLabel = 'Contacts';
   final Color floatingButtonColor = Colors.blue;
   final IconData fireIcon = Icons.add_circle;
 
   @override
-  _MyHomePageState createState() => new _MyHomePageState(
+  _SavedContactState createState() => new _SavedContactState(
         floatingButtonLabel: this.fireLabel,
         icon: this.fireIcon,
         floatingButtonColor: this.floatingButtonColor,
       );
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _SavedContactState extends State<SavedContact> {
   String floatingButtonLabel;
   Color floatingButtonColor;
   IconData icon;
   FirebaseUser firebaseUser;
   StreamSubscription streamSubscription;
 
-  _MyHomePageState({
+  _SavedContactState({
     this.floatingButtonLabel,
     this.icon,
     this.floatingButtonColor,
@@ -52,34 +45,13 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    getContactsPermission().then((granted) {
-      if (granted == PermissionStatus.authorized) {
-        Provider.of<Contactlist>(context, listen: false).refreshContacts();
-      } else {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Oops!'),
-            content: const Text(
-                'Looks like permission to read contacts is not granted.'),
-            actions: <Widget>[
-              FlatButton(
-                child: const Text('OK'),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ],
-          ),
-        );
-      }
-    });
     trysignin();
-    streamSubscription = authService.firebaseuser
-        .listen((firebaseuser) {
-          setState(() => firebaseUser = firebaseuser);
-          print('new activity');
-        });
+    streamSubscription = authService.firebaseuser.listen((firebaseuser) {
+      setState(() => firebaseUser = firebaseuser);
+      print('new activity');
+    });
 
-        print("broadcast: "+authService.firebaseuser.isBroadcast.toString());
+    print("broadcast: " + authService.firebaseuser.isBroadcast.toString());
   }
 
   @override
@@ -92,10 +64,10 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(title: new Text(widget.title), actions: <Widget>[
+      appBar: new AppBar(title:Text('Saved Contacts'), actions: <Widget>[
         IconButton(
-            icon: const Icon(Icons.edit),
-            tooltip: 'Edit Contact',
+            icon: const Icon(Icons.person),
+            tooltip: 'User view',
             onPressed: () {
               Navigator.pushNamed(context, '/user');
             })
@@ -113,7 +85,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     return _buildList(context, snapshot.data.documents);
                   },
                 )
-              : Text('Sign in')),
+              : Text('Sign in to connect with your contacts')),
+
       floatingActionButton: new FloatingActionButton.extended(
         backgroundColor: floatingButtonColor,
         onPressed: () => Navigator.pushNamed(context, '/allcontacts'),
@@ -152,7 +125,4 @@ class _MyHomePageState extends State<MyHomePage> {
           Navigator.pushNamed(context, '/contactview', arguments: record),
     );
   }
-
-  Future<PermissionStatus> getContactsPermission() =>
-      SimplePermissions.requestPermission(Permission.ReadContacts);
 }
