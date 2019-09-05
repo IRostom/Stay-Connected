@@ -80,7 +80,7 @@ class Addcontactstate extends State<Editcontact> {
                 initialValue: customContact.displayname,
                 decoration: InputDecoration(
                     labelText: 'Display Name',
-                    icon: const Icon(Icons.person),
+                    prefixIcon: const Icon(Icons.person),
                     border: OutlineInputBorder()),
                 textCapitalization: TextCapitalization.words,
               ),
@@ -93,10 +93,24 @@ class Addcontactstate extends State<Editcontact> {
                 },
                 initialValue: customContact.primaryphone,
                 decoration: InputDecoration(
-                    labelText: 'Phone',
-                    icon: const Icon(Icons.phone),
+                    labelText: 'Primary Phone',
+                    prefixIcon: const Icon(Icons.phone),
                     border: OutlineInputBorder()),
                 keyboardType: TextInputType.phone,
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.all(10.0),
+              child: TextFormField(
+                onFieldSubmitted: (String value) {
+                  customContact.email = value;
+                },
+                initialValue: customContact.email,
+                decoration: InputDecoration(
+                    labelText: 'E-mail',
+                    prefixIcon: const Icon(Icons.email),
+                    border: OutlineInputBorder()),
+                keyboardType: TextInputType.emailAddress,
               ),
             ),
             Container(
@@ -105,7 +119,7 @@ class Addcontactstate extends State<Editcontact> {
                 controller: myController,
                 decoration: InputDecoration(
                   labelText: 'Reminder Interval',
-                  icon: const Icon(Icons.schedule),
+                  prefixIcon: const Icon(Icons.schedule),
                   border: OutlineInputBorder(),
                   suffixIcon: IconButton(
                     icon: Icon(Icons.more_horiz),
@@ -149,7 +163,10 @@ class Addcontactstate extends State<Editcontact> {
         .document(documentID)
         .setData({
       'displayname': customcontact.contact.displayName,
-      'primaryphone': customcontact.primaryphone
+      'primaryphone': customcontact.primaryphone,
+      'email': customcontact.email,
+      'reminder interval': customcontact.reminderinterval,
+      'creation date': DateTime.now()
     });
   }
 
@@ -161,7 +178,9 @@ class Addcontactstate extends State<Editcontact> {
         .document(documentID)
         .updateData({
       'displayname': customcontact.displayname,
-      'primaryphone': customcontact.primaryphone
+      'primaryphone': customcontact.primaryphone,
+      'email': customcontact.email,
+      'reminder interval': customcontact.reminderinterval
     });
     print(customcontact.primaryphone);
   }
@@ -171,7 +190,8 @@ class Addcontactstate extends State<Editcontact> {
         .collection('users')
         .document(firebaseUser.uid)
         .collection('contacts')
-        .where('displayname', isEqualTo: customContact.contact.displayName.toString())
+        .where('displayname',
+            isEqualTo: customContact.contact.displayName.toString())
         .getDocuments()
         .then((data) {
       if (data.documents.length == 0) {

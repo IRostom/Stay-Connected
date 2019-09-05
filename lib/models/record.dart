@@ -11,9 +11,11 @@ class Record {
   final DateTime lastcontacted;
   final int connects;
 
+
+//TO DO: if it's null import empty string
   Record.fromMap(Map<String, dynamic> map, {this.reference, this.docID})
-      : assert(map['displayname'] != null),
-        assert(map['primaryphone'] != null),
+      : //assert(map['displayname'] != null),
+        //assert(map['primaryphone'] != null),
         displayname = map['displayname'],
         primaryphone = map['primaryphone'],
         email = map['email'],
