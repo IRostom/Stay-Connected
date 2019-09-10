@@ -33,10 +33,11 @@ I wanted to learn how to use flutter to build mobile applications and i believe 
 - [ ] Direct actions from the app ( call, Send a message/E-mail )
 
 ## Tasks
-- [] Improve README file
-- [] Remove public API key for cloud firestore
+- [x] Improve README file
+- [x] Remove public API key for cloud firestore
 - [] Provide APK if you- the person who is reading this- wants to try the app out before it's released.
 - [] finish remind using interval based time feature
+- [] lock cloud firestore before releasing
 
 
 
