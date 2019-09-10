@@ -10,6 +10,8 @@ class CustomContact {
   DateTime creationdate;
   DateTime lastcontacted;
   int connects;
+  int notificationID;
+  String docID; //taken from record data
   //bool isChecked;
   //int id;
 
@@ -21,7 +23,9 @@ class CustomContact {
     this.reminderinterval = 7,
     this.creationdate,
     this.lastcontacted,
-    this.connects
+    this.connects,
+    this.notificationID,
+    this.docID
   });
 
   fromrecord(Record record) {
@@ -32,5 +36,7 @@ class CustomContact {
     creationdate = record.creationdate;
     lastcontacted = record.lastcontacted;
     connects = record.connects;
+    notificationID = record.notificationID;
+    docID = record.docID;
   }
 }

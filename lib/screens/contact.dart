@@ -1,13 +1,15 @@
-import 'package:contacts_service/contacts_service.dart';
+//import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:stay_connected/models/arguments.dart';
 import 'package:stay_connected/models/customcontact.dart';
-import 'package:stay_connected/models/record.dart';
+//import 'package:stay_connected/models/record.dart';
 
 class Contactview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final Record record = ModalRoute.of(context).settings.arguments;
+    //final Record record = ModalRoute.of(context).settings.arguments;
+    final CustomContact customContact =
+        ModalRoute.of(context).settings.arguments;
 
     return Scaffold(
       appBar: AppBar(title: Text('Contact View'), actions: <Widget>[
@@ -15,12 +17,12 @@ class Contactview extends StatelessWidget {
             icon: const Icon(Icons.edit),
             tooltip: 'Edit Contact',
             onPressed: () {
-              Contact contact = new Contact();
-              CustomContact customContact = new CustomContact(contact: contact);
-              customContact.fromrecord(record);
+              //Contact contact = new Contact();
+              //CustomContact customContact = new CustomContact(contact: contact);
+              //customContact.fromrecord(record);
               Navigator.pushNamed(context, '/editcontact',
                   arguments: ViewArguments(customContact, true,
-                      documentID: record.docID));
+                      documentID: customContact.docID));
             })
       ]),
       body: Center(
@@ -33,9 +35,11 @@ class Contactview extends StatelessWidget {
                   radius: 70.0,
                 )), */
             Container(
-                margin: EdgeInsets.all(10.0), child: Text(record.displayname)),
+                margin: EdgeInsets.all(10.0),
+                child: Text(customContact.displayname)),
             Container(
-                margin: EdgeInsets.all(10.0), child: Text(record.primaryphone)),
+                margin: EdgeInsets.all(10.0),
+                child: Text(customContact.primaryphone)),
             Container(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -46,7 +50,6 @@ class Contactview extends StatelessWidget {
                 ],
               ),
             ),
-            
           ],
         ),
       ),
@@ -64,7 +67,7 @@ class Contactview extends StatelessWidget {
   }
 }
 
-Widget viewdata(String label, dynamic value, IconData iconData){
+/* Widget viewdata(String label, dynamic value, IconData iconData){
 return Container(
               margin: EdgeInsets.all(10.0),
               child: TextFormField(
@@ -80,4 +83,4 @@ return Container(
                 textCapitalization: TextCapitalization.words,
               ),
             );
-}
+} */

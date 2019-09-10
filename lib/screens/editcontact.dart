@@ -7,6 +7,7 @@ import 'package:stay_connected/models/customcontact.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:stay_connected/models/record.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class Editcontact extends StatefulWidget {
   @override
@@ -14,6 +15,7 @@ class Editcontact extends StatefulWidget {
 }
 
 class Addcontactstate extends State<Editcontact> {
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   final myController = TextEditingController(text: '7');
   Record record;
   CustomContact contact;
@@ -24,6 +26,16 @@ class Addcontactstate extends State<Editcontact> {
   @override
   void initState() {
     super.initState();
+    // Local notification initialization
+    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    var initializationSettingsAndroid =
+        new AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettingsIOS = new IOSInitializationSettings();
+    var initializationSettings = new InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+    /* onSelectNotification: onSelectNotification */);
+
     streamSubscription = authService.user.listen((FirebaseUser u) {
       firebaseUser = u;
       print(u.displayName);
@@ -49,7 +61,7 @@ class Addcontactstate extends State<Editcontact> {
         actions: <Widget>[
           IconButton(
             icon: updatecontact ? Icon(Icons.update) : Icon(Icons.add_circle),
-            tooltip: updatecontact ? 'Save contact' : 'Update contact',
+            tooltip: updatecontact ? 'Save contact' : 'Update contact', //a3ks
             onPressed: () {
               if (updatecontact) {
                 updatedoc(arguments.documentID, customContact);
@@ -168,6 +180,8 @@ class Addcontactstate extends State<Editcontact> {
       'reminder interval': customcontact.reminderinterval,
       'creation date': DateTime.now()
     });
+    _scheduleNotification(customcontact.reminderinterval,
+        customcontact.notificationID, customcontact.displayname);
   }
 
   void updatedoc(String documentID, CustomContact customcontact) {
@@ -183,6 +197,8 @@ class Addcontactstate extends State<Editcontact> {
       'reminder interval': customcontact.reminderinterval
     });
     print(customcontact.primaryphone);
+
+
   }
 
   void updatedb(CustomContact customContact, BuildContext context) {
@@ -194,9 +210,12 @@ class Addcontactstate extends State<Editcontact> {
             isEqualTo: customContact.contact.displayName.toString())
         .getDocuments()
         .then((data) {
+          // No conflicts found !!
       if (data.documents.length == 0) {
+        customContact.notificationID = int.parse(customContact.primaryphone);
         createdoc(customContact);
         Navigator.popUntil(context, ModalRoute.withName('/'));
+        // Conflicts found !!
       } else if (data.documents.length == 1) {
         DocumentSnapshot documentSnapshot = data.documents[0];
         showDialog(
@@ -224,4 +243,35 @@ class Addcontactstate extends State<Editcontact> {
       }
     });
   }
+
+  Future<void> _scheduleNotification(
+      int interval, int contactid, String displayname) async {
+    DateTime scheduledNotificationDateTime =
+        new DateTime.now().add(new Duration(seconds: interval));
+    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+        'stay connected channel id',
+        'stay connected',
+        'Reminders to stay connected with your contacts');
+    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
+    NotificationDetails platformChannelSpecifics = new NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.schedule(
+        contactid,
+        'Reminder',
+        'Stay connected with $displayname',
+        scheduledNotificationDateTime,
+        platformChannelSpecifics,
+        payload: displayname);
+  }
+
+/* Future<void> onSelectNotification(String payload) async {
+    if (payload != null) {
+      debugPrint('notification payload: ' + payload);
+    }
+    /* await Navigator.push(
+      context,
+      new MaterialPageRoute(builder: (context) => new SecondScreen(payload)),
+    ); */
+    await Navigator.pushNamed(context, '/temp', arguments: payload);
+} */
 }

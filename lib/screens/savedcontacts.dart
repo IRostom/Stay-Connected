@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:stay_connected/models/customcontact.dart';
 import 'package:stay_connected/models/record.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:stay_connected/models/GoogleAuthentication.dart';
@@ -121,8 +122,10 @@ class _SavedContactState extends State<SavedContact> {
       /* list.length >= 1 && list[0]?.value != null
           ? Text(list[0].value)
           : Text(''), */
-      onTap: () =>
-          Navigator.pushNamed(context, '/contactview', arguments: record),
+      onTap: () {
+        CustomContact customContact = CustomContact().fromrecord(record);
+        return Navigator.pushNamed(context, '/contactview', arguments: customContact);
+      },
     );
   }
 }

@@ -10,6 +10,7 @@ class Record {
   final DateTime creationdate;
   final DateTime lastcontacted;
   final int connects;
+  final int notificationID;
 
 
 //TO DO: if it's null import empty string
@@ -22,7 +23,8 @@ class Record {
         reminderinterval = map['reminderinterval'],
         creationdate = map['creationdate'],
         lastcontacted = map['lastcontacted'],
-        connects = map['connects'];
+        connects = map['connects'],
+        notificationID = map['notificationid'];
 
 
   Record.fromSnapshot(DocumentSnapshot snapshot)
