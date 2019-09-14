@@ -33,8 +33,10 @@ class Addcontactstate extends State<Editcontact> {
     var initializationSettingsIOS = new IOSInitializationSettings();
     var initializationSettings = new InitializationSettings(
         initializationSettingsAndroid, initializationSettingsIOS);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-    /* onSelectNotification: onSelectNotification */);
+    flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      /* onSelectNotification: onSelectNotification */
+    );
 
     streamSubscription = authService.user.listen((FirebaseUser u) {
       firebaseUser = u;
@@ -67,6 +69,8 @@ class Addcontactstate extends State<Editcontact> {
                 updatedoc(arguments.documentID, customContact);
                 Navigator.popUntil(context, ModalRoute.withName('/'));
               } else {
+                customContact.notificationID =
+                    int.parse(customContact.primaryphone);
                 updatedb(customContact, context);
               }
             },
@@ -178,13 +182,14 @@ class Addcontactstate extends State<Editcontact> {
       'primaryphone': customcontact.primaryphone,
       'email': customcontact.email,
       'reminder interval': customcontact.reminderinterval,
-      'creation date': DateTime.now()
+      'creation date': DateTime.now(),
+      'notificationid': customcontact.notificationID
     });
     _scheduleNotification(customcontact.reminderinterval,
         customcontact.notificationID, customcontact.displayname);
   }
 
-  void updatedoc(String documentID, CustomContact customcontact) {
+  void updatedoc(String documentID, CustomContact customcontact) async {
     Firestore.instance
         .collection('users')
         .document(firebaseUser.uid)
@@ -194,11 +199,13 @@ class Addcontactstate extends State<Editcontact> {
       'displayname': customcontact.displayname,
       'primaryphone': customcontact.primaryphone,
       'email': customcontact.email,
-      'reminder interval': customcontact.reminderinterval
+      'reminder interval': customcontact.reminderinterval,
+      'notificationid': customcontact.notificationID
     });
-    print(customcontact.primaryphone);
-
-
+    print(customcontact.notificationID);
+    _cancelNotification(customcontact.notificationID);
+    _scheduleNotification(customcontact.reminderinterval,
+        customcontact.notificationID, customcontact.displayname);
   }
 
   void updatedb(CustomContact customContact, BuildContext context) {
@@ -210,7 +217,7 @@ class Addcontactstate extends State<Editcontact> {
             isEqualTo: customContact.contact.displayName.toString())
         .getDocuments()
         .then((data) {
-          // No conflicts found !!
+      // No conflicts found !!
       if (data.documents.length == 0) {
         customContact.notificationID = int.parse(customContact.primaryphone);
         createdoc(customContact);
@@ -244,6 +251,11 @@ class Addcontactstate extends State<Editcontact> {
     });
   }
 
+  Future<void> _cancelNotification(int id) async {
+    await flutterLocalNotificationsPlugin.cancel((id));
+  }
+
+// TO DO : change the interval to days instead of seconds
   Future<void> _scheduleNotification(
       int interval, int contactid, String displayname) async {
     DateTime scheduledNotificationDateTime =
@@ -267,11 +279,18 @@ class Addcontactstate extends State<Editcontact> {
 /* Future<void> onSelectNotification(String payload) async {
     if (payload != null) {
       debugPrint('notification payload: ' + payload);
+      showDialog(
+      builder: (_) => new AlertDialog(
+        title: new Text('Notification'),
+        content: new Text('$payload'),
+      ),
+    );
     }
     /* await Navigator.push(
       context,
-      new MaterialPageRoute(builder: (context) => new SecondScreen(payload)),
+      new MaterialPageRoute(builder: (context) => new Temporary(payload)),
     ); */
-    await Navigator.pushNamed(context, '/temp', arguments: payload);
+    //await Navigator.pushNamed(context, '/temp', arguments: payload);
+    
 } */
 }

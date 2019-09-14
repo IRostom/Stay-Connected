@@ -6,7 +6,6 @@ import 'package:stay_connected/screens/addcontact.dart';
 import 'package:stay_connected/screens/editcontact.dart';
 import 'package:stay_connected/models/contactlist.dart';
 import 'package:stay_connected/screens/user.dart';
-import 'package:stay_connected/screens/temp.dart';
 
 void main() => runApp(new MyApp());
 
@@ -27,8 +26,7 @@ class MyApp extends StatelessWidget {
           '/': (context) => SavedContact(), //saved contacts
           '/allcontacts': (context) => Addcontact(),
           '/contactview': (context) => Contactview(),
-          '/editcontact': (context) => Editcontact(),
-          '/temp': (context) => Temporary(),
+          '/editcontact': (context) => Editcontact()
         },
       ),
     );

@@ -108,6 +108,7 @@ class _SavedContactState extends State<SavedContact> {
 
   ListTile _buildListTile(BuildContext context, DocumentSnapshot data) {
     final record = Record.fromSnapshot(data);
+    CustomContact customContact = CustomContact.fromrecord(record);
     return ListTile(
       /*  leading: (c.contact.avatar != null)
           ? CircleAvatar(backgroundImage: MemoryImage(c.contact.avatar))
@@ -123,7 +124,7 @@ class _SavedContactState extends State<SavedContact> {
           ? Text(list[0].value)
           : Text(''), */
       onTap: () {
-        CustomContact customContact = CustomContact().fromrecord(record);
+        
         return Navigator.pushNamed(context, '/contactview', arguments: customContact);
       },
     );

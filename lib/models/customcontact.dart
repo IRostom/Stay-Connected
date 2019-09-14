@@ -28,7 +28,7 @@ class CustomContact {
     this.docID
   });
 
-  fromrecord(Record record) {
+  CustomContact.fromrecord(Record record) {
     displayname = record.displayname;
     primaryphone = record.primaryphone;
     email = record.email;
